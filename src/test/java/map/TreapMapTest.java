@@ -1,4 +1,6 @@
 package map;
 
-public class TreapMapTest {
+
+public class TreapMapTest{
+
 }
