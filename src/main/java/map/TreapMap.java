@@ -50,5 +50,22 @@ public class TreapMap<K, V> {
     public boolean isEmpty() {
         return size == 0;
     }
+
+    public V get(K key) {
+        Node<K, V> current = root;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp == 0) {
+                return current.value;
+            }  else if (cmp < 0) {
+                current = current.left;
+            }  else {
+                current = current.right;
+            }
+        }
+        return null;
+    }
 }
 
