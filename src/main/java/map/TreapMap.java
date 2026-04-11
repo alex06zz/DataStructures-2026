@@ -67,5 +67,62 @@ public class TreapMap<K, V> {
         }
         return null;
     }
+
+    private void rotateLeft(Node<K, V> x) {
+        // y becomes new root of this subtree
+        Node<K, V> y = x.right;
+        if (y == null) {
+            return; // cannot rotate if there is no right child
+        }
+
+        // move y's left subtree to x's right
+        x.right = y.left;
+        if (y.left != null) {
+            y.left.parent = x;
+        }
+
+        // link y to x's parent
+        y.parent = x.parent;
+
+        if (x.parent == null) {
+            root = y; // x was root
+        } else if (x == x.parent.left) {
+            x.parent.left = y;
+        } else  {
+            x.parent.right = y;
+        }
+        // put x as left child of y
+        y.left = x;
+        x.parent = y;
+    }
+
+    private void rotateRight(Node<K, V> x) {
+        // y becomes new root of this subtree
+        Node<K, V> y = x.left;
+        if (y == null) {
+            return; // cannot rotate if no left child
+        }
+
+        // move y's right subtree to x's left
+        x.left = y.right;
+        if (y.right != null) {
+            y.right.parent = x;
+        }
+
+        // link y to x's parent
+        y.parent = x.parent;
+
+        if (x.parent == null) {
+            root = y; // x was a root
+        } else if (x == x.parent.right) {
+            x.parent.right = y;
+        } else {
+            x.parent.left = y;
+        }
+
+        // put x as right child of y
+        y.right = x;
+        x.parent = y;
+    }
 }
 
