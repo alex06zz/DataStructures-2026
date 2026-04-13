@@ -177,5 +177,57 @@ public class TreapMap<K, V> {
         }
     }
 
+    public V remove(K key) {
+        Node<K, V> node = findNode(key);
+
+        if (node == null) {
+            return null;
+        }
+
+        V oldValue = node.value;
+
+        // Rotate the node down until it becomes a leaf
+        while (node.left != null || node.right != null) {
+            if (node.left == null) {
+                rotateLeft(node);
+            } else if (node.right == null) {
+                rotateRight(node);
+            } else if (node.left.priority > node.right.priority) {
+                rotateRight(node);
+            } else {
+                rotateLeft(node);
+            }
+        }
+
+        // Remove the leaf
+        if (node.parent == null) {
+            root = null;
+        } else if (node == node.parent.left) {
+            node.parent.left = null;
+        } else {
+            node.parent.right = null;
+        }
+        size--;
+        return oldValue;
+    }
+
+
+    private Node<K, V> findNode(K key) {
+        Node<K, V> current = root;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp == 0) {
+                return current;
+            } else if (cmp < 0) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return null;
+    }
 }
 
