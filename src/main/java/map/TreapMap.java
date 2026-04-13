@@ -1,9 +1,13 @@
-package map;
-
+package main.java.map;
 import java.util.Comparator;
 import java.util.Random;
 
 public class TreapMap<K, V> {
+
+    private Node<K, V> root;
+    private int size;
+    private final Comparator<K> comparator;
+    private final Random random;
 
     private static class Node<K, V> {
         K key;
@@ -21,10 +25,6 @@ public class TreapMap<K, V> {
         }
     }
 
-    private Node<K, V> root;
-    private int size;
-    private final Comparator<K> comparator;
-    private final Random random;
 
     public TreapMap() {
         this(null);
@@ -124,5 +124,6 @@ public class TreapMap<K, V> {
         y.right = x;
         x.parent = y;
     }
+
 }
 
