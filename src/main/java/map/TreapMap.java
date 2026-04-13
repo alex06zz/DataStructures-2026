@@ -125,5 +125,57 @@ public class TreapMap<K, V> {
         x.parent = y;
     }
 
+    public V put(K key, V value) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key cannot be null");
+        }
+
+        if (root == null) {
+            root = new Node<>(key, value, random.nextInt(), null);
+            size++;
+            return null;
+        }
+
+        Node<K, V> current = root;
+        Node<K, V> parent = null;
+
+        while (current != null) {
+            parent = current;
+            int cmp = compare(key, current.key);
+
+            if (cmp == 0) {
+                V oldValue = current.value;
+                current.value = value;
+                return oldValue;
+            } else if (cmp < 0) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+        Node<K, V> newNode = new Node<>(key, value, random.nextInt(), parent);
+
+        if (compare(key, parent.key) == 0) {
+            parent.left = newNode;
+        } else  {
+            parent.right = newNode;
+        }
+
+        size++;
+        bubbleUp(newNode);
+        return null;
+    }
+
+
+    private void bubbleUp(Node<K, V> node) {
+        while (node.parent != null && node.priority > node.parent.priority) {
+            if (node == node.parent.left) {
+                rotateRight(node.parent);
+            } else {
+                rotateLeft(node.parent);
+            }
+        }
+    }
+
 }
 
