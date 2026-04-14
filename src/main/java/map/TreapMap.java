@@ -57,6 +57,8 @@ public class TreapMap<K, V> {
     public TreapMap(Comparator<K> comparator) {
         this.comparator = comparator;
         this.random = new Random();
+        this.root = null;
+        this.size = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -179,7 +181,7 @@ public class TreapMap<K, V> {
         }
         Node<K, V> newNode = new Node<>(key, value, random.nextInt(), parent);
 
-        if (compare(key, parent.key) == 0) {
+        if (compare(key, parent.key) < 0) {
             parent.left = newNode;
         } else  {
             parent.right = newNode;
