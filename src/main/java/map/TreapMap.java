@@ -1,6 +1,7 @@
 package main.java.map;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class TreapMap<K, V> {
 
@@ -22,6 +23,29 @@ public class TreapMap<K, V> {
             this.value = value;
             this.priority = priority;
             this.parent = parent;
+        }
+    }
+
+    public static class KeyValuePair<K, V> {
+        private K key;
+        private V value;
+
+        public KeyValuePair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + key + ", " + value + ">";
         }
     }
 
@@ -226,8 +250,30 @@ public class TreapMap<K, V> {
                 current = current.right;
             }
         }
-
         return null;
+    }
+
+    public ArrayList<KeyValuePair<K, V>> inorder() {
+        ArrayList<KeyValuePair<K, V>> result = new ArrayList<>();
+        inorder(root, result);
+        return result;
+    }
+
+    private void inorder(Node<K, V> node, ArrayList<KeyValuePair<K, V>> result) {
+        if (node != null) {
+            inorder(node.left, result);
+            result.add(new KeyValuePair<>(node.key, node.value));
+            inorder(node.right, result);
+        }
+    }
+
+    public boolean containsKey(K key) {
+        return findNode(key) != null;
+    }
+
+    public void clear() {
+        root = null;
+        size = 0;
     }
 }
 
