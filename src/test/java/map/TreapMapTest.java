@@ -116,4 +116,23 @@ class TreapMapTest {
         assertEquals(25, result.get(2).getKey());
         assertEquals(30, result.get(3).getKey());
     }
+
+    @Test
+    void multipleInsertDelete() {
+        TreapMap<Integer, String> treap = new TreapMap<>();
+
+        for (int i = 0; i < 100; i++) {
+            treap.put(i, "Val" + i);
+        }
+
+        for (int i = 0; i < 100; i++) {
+            assertEquals("Val" + i, treap.get(i));
+        }
+
+        for (int i = 0; i < 100; i++) {
+            treap.remove(i);
+        }
+
+        assertTrue(treap.isEmpty());
+    }
 }
