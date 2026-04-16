@@ -135,4 +135,13 @@ class TreapMapTest {
 
         assertTrue(treap.isEmpty());
     }
+
+    @Test
+    void removeFromEmptyTreap() {
+        TreapMap<Integer, String> treap = new TreapMap<>();
+
+        assertNull(treap.remove(10));
+        assertTrue(treap.isEmpty());
+    }
+
 }
