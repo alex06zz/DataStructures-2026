@@ -34,6 +34,8 @@ public class BenchmarkSorting {
         benchmarkQuickSort(data);
     }
 
+
+
     // ---------- Benchmark methods ----------
 
     private static void benchmarkTreapSort(List<Integer> data) {
@@ -69,40 +71,101 @@ public class BenchmarkSorting {
     // ---------- Timing ----------
 
     private static long timeTreapSort(List<Integer> data) {
-        List<Integer> copy = new ArrayList<>(data);
-        long start = System.nanoTime();
-        SortingAlgorithms.treapSort(copy);
-        return System.nanoTime() - start;
+        int runs = 10;
+
+        // Warm-up
+        for (int i = 0; i < 5; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            SortingAlgorithms.treapSort(copy);
+        }
+
+        // Measured runs
+        long total = 0;
+        for (int i = 0; i < runs; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            long start = System.nanoTime();
+            SortingAlgorithms.treapSort(copy);
+            total += System.nanoTime() - start;
+        }
+
+        return total / runs;
     }
 
     private static long timePQSort(List<Integer> data) {
-        List<Integer> copy = new ArrayList<>(data);
-        long start = System.nanoTime();
-        SortingAlgorithms.pqSort(copy);
-        return System.nanoTime() - start;
+        int runs = 10;
+
+        for (int i = 0; i < 5; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            SortingAlgorithms.pqSort(copy);
+        }
+
+        long total = 0;
+        for (int i = 0; i < runs; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            long start = System.nanoTime();
+            SortingAlgorithms.pqSort(copy);
+            total += System.nanoTime() - start;
+        }
+
+        return total / runs;
     }
 
     private static long timeJavaSort(List<Integer> data) {
-        List<Integer> copy = new ArrayList<>(data);
-        long start = System.nanoTime();
-        SortingAlgorithms.javaSort(copy);
-        return System.nanoTime() - start;
+        int runs = 10;
+
+        for (int i = 0; i < 5; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            SortingAlgorithms.javaSort(copy);
+        }
+
+        long total = 0;
+        for (int i = 0; i < runs; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            long start = System.nanoTime();
+            SortingAlgorithms.javaSort(copy);
+            total += System.nanoTime() - start;
+        }
+
+        return total / runs;
     }
 
     private static long timeMergeSort(List<Integer> data) {
-        List<Integer> copy = new ArrayList<>(data);
-        long start = System.nanoTime();
-        SortingAlgorithms.mergeSort(copy);
-        return System.nanoTime() - start;
+        int runs = 10;
+
+        for (int i = 0; i < 5; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            SortingAlgorithms.mergeSort(copy);
+        }
+
+        long total = 0;
+        for (int i = 0; i < runs; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            long start = System.nanoTime();
+            SortingAlgorithms.mergeSort(copy);
+            total += System.nanoTime() - start;
+        }
+
+        return total / runs;
     }
 
     private static long timeQuickSort(List<Integer> data) {
-        List<Integer> copy = new ArrayList<>(data);
-        long start = System.nanoTime();
-        SortingAlgorithms.quickSort(copy);
-        return System.nanoTime() - start;
-    }
+        int runs = 10;
 
+        for (int i = 0; i < 5; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            SortingAlgorithms.quickSort(copy);
+        }
+
+        long total = 0;
+        for (int i = 0; i < runs; i++) {
+            List<Integer> copy = new ArrayList<>(data);
+            long start = System.nanoTime();
+            SortingAlgorithms.quickSort(copy);
+            total += System.nanoTime() - start;
+        }
+
+        return total / runs;
+    }
     // ---------- Data generation ----------
 
     private static List<Integer> generateRandomData(int n) {
