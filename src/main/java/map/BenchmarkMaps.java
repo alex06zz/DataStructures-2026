@@ -9,6 +9,7 @@ import java.util.TreeMap;
 public class BenchmarkMaps {
 
     private static final Random RANDOM = new Random();
+    private static final int WARMUP_RUNS = 5;
 
     public static void main(String[] args) {
         int[] sizes = {100, 500, 1000, 2000, 5000, 10000};
@@ -86,6 +87,13 @@ public class BenchmarkMaps {
     // ---------- Treap timing ----------
 
     private static long timeTreapInsert(TreapMap<Integer, Integer> treap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            TreapMap<Integer, Integer> warmupTreap = new TreapMap<>();
+            for (Integer x : data) {
+                warmupTreap.put(x, x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treap.put(x, x);
@@ -94,6 +102,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeTreapSuccessfulSearch(TreapMap<Integer, Integer> treap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (Integer x : data) {
+                treap.get(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treap.get(x);
@@ -102,6 +116,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeTreapUnsuccessfulSearch(TreapMap<Integer, Integer> treap, int n) {
+        for (int k = 0; k < WARMUP_RUNS; k++) {
+            for (int i = n; i < 2 * n; i++) {
+                treap.get(i + 1000000);
+            }
+        }
+
         long start = System.nanoTime();
         for (int i = n; i < 2 * n; i++) {
             treap.get(i + 1000000);
@@ -110,12 +130,26 @@ public class BenchmarkMaps {
     }
 
     private static long timeTreapTraversal(TreapMap<Integer, Integer> treap) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            treap.inorder();
+        }
+
         long start = System.nanoTime();
         treap.inorder();
         return System.nanoTime() - start;
     }
 
     private static long timeTreapDelete(TreapMap<Integer, Integer> treap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            TreapMap<Integer, Integer> warmupTreap = new TreapMap<>();
+            for (Integer x : data) {
+                warmupTreap.put(x, x);
+            }
+            for (Integer x : data) {
+                warmupTreap.remove(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treap.remove(x);
@@ -126,6 +160,13 @@ public class BenchmarkMaps {
     // ---------- AVL timing ----------
 
     private static long timeAVLInsert(AVLTree<Integer, Integer> avl, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            AVLTree<Integer, Integer> warmupAVL = new AVLTree<>();
+            for (Integer x : data) {
+                warmupAVL.insert(x, x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             avl.insert(x, x);
@@ -134,6 +175,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeAVLSuccessfulSearch(AVLTree<Integer, Integer> avl, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (Integer x : data) {
+                avl.search(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             avl.search(x);
@@ -142,6 +189,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeAVLUnsuccessfulSearch(AVLTree<Integer, Integer> avl, int n) {
+        for (int k = 0; k < WARMUP_RUNS; k++) {
+            for (int i = n; i < 2 * n; i++) {
+                avl.search(i + 1000000);
+            }
+        }
+
         long start = System.nanoTime();
         for (int i = n; i < 2 * n; i++) {
             avl.search(i + 1000000);
@@ -150,12 +203,26 @@ public class BenchmarkMaps {
     }
 
     private static long timeAVLTraversal(AVLTree<Integer, Integer> avl) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            avl.inorder();
+        }
+
         long start = System.nanoTime();
         avl.inorder();
         return System.nanoTime() - start;
     }
 
     private static long timeAVLDelete(AVLTree<Integer, Integer> avl, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            AVLTree<Integer, Integer> warmupAVL = new AVLTree<>();
+            for (Integer x : data) {
+                warmupAVL.insert(x, x);
+            }
+            for (Integer x : data) {
+                warmupAVL.delete(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             avl.delete(x);
@@ -166,6 +233,13 @@ public class BenchmarkMaps {
     // ---------- Java TreeMap timing ----------
 
     private static long timeJavaTreeMapInsert(TreeMap<Integer, Integer> treeMap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            TreeMap<Integer, Integer> warmupTreeMap = new TreeMap<>();
+            for (Integer x : data) {
+                warmupTreeMap.put(x, x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treeMap.put(x, x);
@@ -174,6 +248,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeJavaTreeMapSuccessfulSearch(TreeMap<Integer, Integer> treeMap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (Integer x : data) {
+                treeMap.get(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treeMap.get(x);
@@ -182,6 +262,12 @@ public class BenchmarkMaps {
     }
 
     private static long timeJavaTreeMapUnsuccessfulSearch(TreeMap<Integer, Integer> treeMap, int n) {
+        for (int k = 0; k < WARMUP_RUNS; k++) {
+            for (int i = n; i < 2 * n; i++) {
+                treeMap.get(i + 1000000);
+            }
+        }
+
         long start = System.nanoTime();
         for (int i = n; i < 2 * n; i++) {
             treeMap.get(i + 1000000);
@@ -190,6 +276,13 @@ public class BenchmarkMaps {
     }
 
     private static long timeJavaTreeMapTraversal(TreeMap<Integer, Integer> treeMap) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (var entry : treeMap.entrySet()) {
+                entry.getKey();
+                entry.getValue();
+            }
+        }
+
         long start = System.nanoTime();
         for (var entry : treeMap.entrySet()) {
             entry.getKey();
@@ -199,13 +292,22 @@ public class BenchmarkMaps {
     }
 
     private static long timeJavaTreeMapDelete(TreeMap<Integer, Integer> treeMap, List<Integer> data) {
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            TreeMap<Integer, Integer> warmupTreeMap = new TreeMap<>();
+            for (Integer x : data) {
+                warmupTreeMap.put(x, x);
+            }
+            for (Integer x : data) {
+                warmupTreeMap.remove(x);
+            }
+        }
+
         long start = System.nanoTime();
         for (Integer x : data) {
             treeMap.remove(x);
         }
         return System.nanoTime() - start;
     }
-
     // ---------- Data generation ----------
 
     private static List<Integer> generateRandomData(int n) {
