@@ -1,9 +1,13 @@
 package main.java.map;
+import interfaces.AbstractMap;
+import interfaces.Entry;
+import interfaces.SortedMap;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.ArrayList;
 
-public class TreapMap<K, V> {
+public class TreapMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V> {
 
     private Node<K, V> root;
     private int size;
@@ -26,7 +30,7 @@ public class TreapMap<K, V> {
         }
     }
 
-    public static class KeyValuePair<K, V> {
+    public static class KeyValuePair<K, V> implements Entry<K, V> {
         private K key;
         private V value;
 
@@ -69,15 +73,26 @@ public class TreapMap<K, V> {
         return ((Comparable<K>) a).compareTo(b);
     }
 
+    private void validateKey(K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key cannot be null");
+        }
+        compare(key, key);
+    }
+
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
-        return size == 0;
+        return super.isEmpty();
     }
 
+    @Override
     public V get(K key) {
+        validateKey(key);
         Node<K, V> current = root;
 
         while (current != null) {
@@ -151,10 +166,9 @@ public class TreapMap<K, V> {
         x.parent = y;
     }
 
+    @Override
     public V put(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key cannot be null");
-        }
+        validateKey(key);
 
         if (root == null) {
             root = new Node<>(key, value, random.nextInt(), null);
@@ -203,7 +217,9 @@ public class TreapMap<K, V> {
         }
     }
 
+    @Override
     public V remove(K key) {
+        validateKey(key);
         Node<K, V> node = findNode(key);
 
         if (node == null) {
@@ -276,6 +292,156 @@ public class TreapMap<K, V> {
     public void clear() {
         root = null;
         size = 0;
+    }
+
+
+    @Override
+    public Iterable<Entry<K, V>> entrySet() {
+        ArrayList<Entry<K, V>> entries = new ArrayList<>();
+        buildEntrySet(root, entries);
+        return entries;
+    }
+
+    private void buildEntrySet(Node<K, V> node, ArrayList<Entry<K, V>> entries) {
+        if (node != null) {
+            buildEntrySet(node.left, entries);
+            entries.add(new KeyValuePair<>(node.key, node.value));
+            buildEntrySet(node.right, entries);
+        }
+    }
+
+    @Override
+    public Entry<K, V> firstEntry() {
+        if (root == null) {
+            return null;
+        }
+
+        Node<K, V> current = root;
+        while (current.left != null) {
+            current = current.left;
+        }
+        return new KeyValuePair<>(current.key, current.value);
+    }
+
+    @Override
+    public Entry<K, V> lastEntry() {
+        if (root == null) {
+            return null;
+        }
+
+        Node<K, V> current = root;
+        while (current.right != null) {
+            current = current.right;
+        }
+        return new KeyValuePair<>(current.key, current.value);
+    }
+
+    @Override
+    public Entry<K, V> ceilingEntry(K key) throws IllegalArgumentException {
+        validateKey(key);
+        Node<K, V> current = root;
+        Node<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+            if (cmp == 0) {
+                return new KeyValuePair<>(current.key, current.value);
+            } else if (cmp < 0) {
+                candidate = current;
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> floorEntry(K key) throws IllegalArgumentException {
+        validateKey(key);
+        Node<K, V> current = root;
+        Node<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+            if (cmp == 0) {
+                return new KeyValuePair<>(current.key, current.value);
+            } else if (cmp < 0) {
+                current = current.left;
+            } else {
+                candidate = current;
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> lowerEntry(K key) throws IllegalArgumentException {
+        validateKey(key);
+        Node<K, V> current = root;
+        Node<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+            if (cmp <= 0) {
+                current = current.left;
+            } else {
+                candidate = current;
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> higherEntry(K key) throws IllegalArgumentException {
+        validateKey(key);
+        Node<K, V> current = root;
+        Node<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+            if (cmp < 0) {
+                candidate = current;
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Iterable<Entry<K, V>> subMap(K fromKey, K toKey) throws IllegalArgumentException {
+        validateKey(fromKey);
+        validateKey(toKey);
+
+        ArrayList<Entry<K, V>> result = new ArrayList<>();
+        buildSubMap(root, result, fromKey, toKey);
+        return result;
+    }
+
+    private void buildSubMap(Node<K, V> node, ArrayList<Entry<K, V>> result, K fromKey, K toKey) {
+        if (node == null) {
+            return;
+        }
+
+        if (compare(node.key, fromKey) >= 0) {
+            buildSubMap(node.left, result, fromKey, toKey);
+        }
+
+        if (compare(node.key, fromKey) >= 0 && compare(node.key, toKey) < 0) {
+            result.add(new KeyValuePair<>(node.key, node.value));
+        }
+
+        if (compare(node.key, toKey) < 0) {
+            buildSubMap(node.right, result, fromKey, toKey);
+        }
     }
 }
 
