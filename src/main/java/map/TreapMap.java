@@ -87,7 +87,7 @@ public class TreapMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
 
     @Override
     public boolean isEmpty() {
-        return super.isEmpty();
+        return size() == 0;
     }
 
     @Override
@@ -276,6 +276,7 @@ public class TreapMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         inorder(root, result);
         return result;
     }
+
 
     private void inorder(Node<K, V> node, ArrayList<KeyValuePair<K, V>> result) {
         if (node != null) {

@@ -2,7 +2,7 @@ package test.java.map;
 
 import main.java.map.TreapMap;
 import org.junit.jupiter.api.Test;
-
+import interfaces.Entry;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TreapMapTest {
@@ -100,7 +100,7 @@ class TreapMapTest {
     }
 
     @Test
-    void inorderReturnsSortedKeys() {
+    void entrySetReturnsSortedKeys() {
         TreapMap<Integer, String> treap = new TreapMap<>();
 
         treap.put(20, "B");
@@ -108,7 +108,10 @@ class TreapMapTest {
         treap.put(30, "C");
         treap.put(25, "D");
 
-        var result = treap.inorder();
+        var result = new java.util.ArrayList<Entry<Integer, String>>();
+        for (var e : treap.entrySet()) {
+            result.add(e);
+        }
 
         assertEquals(4, result.size());
         assertEquals(10, result.get(0).getKey());
