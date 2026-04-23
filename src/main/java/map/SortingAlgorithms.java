@@ -6,22 +6,20 @@ public class SortingAlgorithms {
 
     //retrieves in order traversal of our treap structure, this will return sorted data as treap maintains BST property
     public static List<Integer> treapSort(List<Integer> data) {
-        TreapMap<Integer, Integer> treap = new TreapMap<>();
+        TreapMap<Long, Integer> treap = new TreapMap<>();
 
         int index = 0;
         for (Integer x : data) {
             //Key based on Value and Index to cater for duplicates while maintaining order of keys
             //Handles n <= 10000 (benchmark expectations)
-            int key = x * 100000 + index;
+            long key = (long)x * 100000 + index;
             treap.put(key, x);
             index++;
         }
-
         List<Integer> sorted = new ArrayList<>();
-        for (TreapMap.KeyValuePair<Integer, Integer> pair : treap.inorder()) {
+        for (TreapMap.KeyValuePair<Long, Integer> pair : treap.inorder()) {
             sorted.add(pair.getValue());
         }
-
         return sorted;
     }
 
