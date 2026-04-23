@@ -287,6 +287,7 @@ public class TreapMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
     }
 
     public boolean containsKey(K key) {
+        validateKey(key);
         return findNode(key) != null;
     }
 
@@ -421,6 +422,10 @@ public class TreapMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
     public Iterable<Entry<K, V>> subMap(K fromKey, K toKey) throws IllegalArgumentException {
         validateKey(fromKey);
         validateKey(toKey);
+
+        if (compare(fromKey, toKey) > 0) {
+            throw new IllegalArgumentException("fromKey must be <= toKey");
+        }
 
         ArrayList<Entry<K, V>> result = new ArrayList<>();
         buildSubMap(root, result, fromKey, toKey);
