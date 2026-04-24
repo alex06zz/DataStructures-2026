@@ -1,9 +1,11 @@
 package main.java.map;
+import interfaces.Entry;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class AVLTree<K, V> {
+public class AVLTree<K, V> extends interfaces.AbstractMap<K, V>  {
 
     // Fields---
     private AVLNode<K, V> root;
@@ -83,6 +85,13 @@ public class AVLTree<K, V> {
     public V search(K key) {
         AVLNode<K, V> node = getNode(key);
         return node == null ? null : node.value;
+    }
+
+    @Override
+    public V get(Object key) {
+        @SuppressWarnings("unchecked")
+        K k = (K) key;
+        return search(k);
     }
 
     private int height(AVLNode<K, V> node) {
@@ -204,6 +213,11 @@ public class AVLTree<K, V> {
         return null;
     }
 
+    @Override
+    public V put(K key, V value) {
+        return insert(key, value);
+    }
+
     private AVLNode<K, V> insert(AVLNode<K, V> node, K key, V value, AVLNode<K, V> parent) {
         if (node == null) {
             AVLNode<K, V> newNode = new AVLNode<>(key, value);
@@ -236,6 +250,13 @@ public class AVLTree<K, V> {
         root = delete(root, key);
         size--;
         return oldValue;
+    }
+
+    @Override
+    public V remove(Object key) {
+        @SuppressWarnings("unchecked")
+        K k = (K) key;
+        return delete(k);
     }
 
     private AVLNode<K, V> delete(AVLNode<K, V> node, K key) {
@@ -378,5 +399,10 @@ public class AVLTree<K, V> {
             System.out.print(pair + " ");
         }
         System.out.println();
+    }
+
+    @Override
+    public Iterable<Entry<K, V>> entrySet() {
+        throw new UnsupportedOperationException();
     }
 }
