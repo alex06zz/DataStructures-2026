@@ -5,7 +5,7 @@ import interfaces.Entry;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class AVLTree<K, V> extends interfaces.AbstractMap<K, V>  {
+public class AVLTree<K, V> extends interfaces.AbstractMap<K, V> implements interfaces.SortedMap<K, V>  {
 
     // Fields---
     private AVLNode<K, V> root;
@@ -30,7 +30,7 @@ public class AVLTree<K, V> extends interfaces.AbstractMap<K, V>  {
         }
     }
 
-    public static class KeyValuePair<K, V> {
+    public static class KeyValuePair<K, V> implements Entry<K, V> {
         private K key;
         private V value;
 
@@ -340,12 +340,6 @@ public class AVLTree<K, V> extends interfaces.AbstractMap<K, V>  {
         }
     }
 
-
-
-
-
-
-
     //useful methods
     public void clear() {
         root = null;
@@ -403,6 +397,135 @@ public class AVLTree<K, V> extends interfaces.AbstractMap<K, V>  {
 
     @Override
     public Iterable<Entry<K, V>> entrySet() {
-        throw new UnsupportedOperationException();
+        ArrayList<Entry<K, V>> entries = new ArrayList<>();
+        buildEntrySet(root, entries);
+        return entries;
+    }
+
+    private void buildEntrySet(AVLNode<K, V> node, ArrayList<Entry<K, V>> entries) {
+        if (node != null) {
+            buildEntrySet(node.left, entries);
+            entries.add(new KeyValuePair<>(node.key, node.value));
+            buildEntrySet(node.right, entries);
+        }
+    }
+
+    @Override
+    public Entry<K, V> firstEntry() {
+        if (root == null) return null;
+        AVLNode<K, V> min = getMin(root);
+        return new KeyValuePair<>(min.key, min.value);
+    }
+
+    @Override
+    public Entry<K, V> lastEntry() {
+        if (root == null) return null;
+        AVLNode<K, V> max = getMax(root);
+        return new KeyValuePair<>(max.key, max.value);
+    }
+
+    @Override
+    public Entry<K, V> ceilingEntry(K key) {
+        AVLNode<K, V> current = root;
+        AVLNode<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp == 0) return new KeyValuePair<>(current.key, current.value);
+            else if (cmp < 0) {
+                candidate = current;
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> floorEntry(K key) {
+        AVLNode<K, V> current = root;
+        AVLNode<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp == 0) return new KeyValuePair<>(current.key, current.value);
+            else if (cmp < 0) {
+                current = current.left;
+            } else {
+                candidate = current;
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> lowerEntry(K key) {
+        AVLNode<K, V> current = root;
+        AVLNode<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp <= 0) {
+                current = current.left;
+            } else {
+                candidate = current;
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Entry<K, V> higherEntry(K key) {
+        AVLNode<K, V> current = root;
+        AVLNode<K, V> candidate = null;
+
+        while (current != null) {
+            int cmp = compare(key, current.key);
+
+            if (cmp < 0) {
+                candidate = current;
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return candidate == null ? null : new KeyValuePair<>(candidate.key, candidate.value);
+    }
+
+    @Override
+    public Iterable<Entry<K, V>> subMap(K fromKey, K toKey) {
+        ArrayList<Entry<K, V>> result = new ArrayList<>();
+        buildSubMap(root, result, fromKey, toKey);
+        return result;
+    }
+
+    private void buildSubMap(AVLNode<K, V> node, ArrayList<Entry<K, V>> result, K fromKey, K toKey) {
+        if (node == null) return;
+
+        if (compare(node.key, fromKey) >= 0)
+            buildSubMap(node.left, result, fromKey, toKey);
+
+        if (compare(node.key, fromKey) >= 0 && compare(node.key, toKey) < 0)
+            result.add(new KeyValuePair<>(node.key, node.value));
+
+        if (compare(node.key, toKey) < 0)
+            buildSubMap(node.right, result, fromKey, toKey);
+    }
+
+    private void validateKey(K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key cannot be null");
+        }
+        compare(key, key);
     }
 }
