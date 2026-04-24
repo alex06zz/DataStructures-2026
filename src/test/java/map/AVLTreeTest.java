@@ -331,4 +331,63 @@ class AVLTreeTest {
         ArrayList<AVLTree.KeyValuePair<Integer, String>> expected = tree.inorder();
         assertEquals(7, expected.size());
     }
+
+    @Test
+    void firstAndLastEntry() {
+        AVLTree<Integer, String> tree = createSampleTree();
+
+        assertEquals(20, tree.firstEntry().getKey());
+        assertEquals(80, tree.lastEntry().getKey());
+    }
+
+    @Test
+    void ceilingEntry() {
+        AVLTree<Integer, String> tree = createSampleTree();
+
+        assertEquals(60, tree.ceilingEntry(55).getKey());
+        assertEquals(50, tree.ceilingEntry(50).getKey());
+        assertNull(tree.ceilingEntry(100));
+    }
+
+    @Test
+    void floorEntry() {
+        AVLTree<Integer, String> tree = createSampleTree();
+
+        assertEquals(50, tree.floorEntry(55).getKey());
+        assertEquals(20, tree.floorEntry(20).getKey());
+        assertNull(tree.floorEntry(10));
+    }
+
+    @Test
+    void lowerEntry() {
+        AVLTree<Integer, String> tree = createSampleTree();
+
+        assertEquals(40, tree.lowerEntry(50).getKey());
+        assertNull(tree.lowerEntry(20));
+    }
+
+    @Test
+    void higherEntry() {
+        AVLTree<Integer, String> tree = createSampleTree();
+
+        assertEquals(60, tree.higherEntry(50).getKey());
+        assertNull(tree.higherEntry(80));
+    }
+
+    @Test
+    void emptyTreeSortedMethods() {
+        AVLTree<Integer, String> tree = new AVLTree<>();
+
+        assertNull(tree.firstEntry());
+        assertNull(tree.lastEntry());
+        assertNull(tree.ceilingEntry(10));
+        assertNull(tree.floorEntry(10));
+    }
+
+    @Test
+    void nullKeyThrows() {
+        AVLTree<Integer, String> tree = new AVLTree<>();
+
+        assertThrows(IllegalArgumentException.class, () -> tree.insert(null, "A"));
+    }
 }
