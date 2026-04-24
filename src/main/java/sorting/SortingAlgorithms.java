@@ -1,4 +1,6 @@
-package main.java.map;
+package main.java.sorting;
+
+import main.java.map.TreapMap;
 
 import java.util.*;
 

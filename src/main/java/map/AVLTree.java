@@ -151,7 +151,7 @@ public class AVLTree<K, V> {
         return y;
     }
 
-    // Rebalances shi
+    // Rebalances subtree if needed
     private AVLNode<K, V> rebalance(AVLNode<K, V> node) {
         if (node == null) return null;
 

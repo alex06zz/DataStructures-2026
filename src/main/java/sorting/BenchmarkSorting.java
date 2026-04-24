@@ -1,4 +1,4 @@
-package main.java.map;
+package main.java.sorting;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,6 @@
-package test.java.map;
+package test.java.sorting;
 
-import main.java.map.SortingAlgorithms;
+import main.java.sorting.SortingAlgorithms;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
