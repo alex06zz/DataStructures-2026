@@ -38,24 +38,26 @@ public class BenchmarkMaps {
         TreapMap<Integer, Integer> treap = new TreapMap<>();
 
         long insertTime = timeTreapInsert(treap, data);
+        long singleInsertTime = timeTreapSingleInsert(treap, data.size() + 1000000);
         long successfulSearchTime = timeTreapSuccessfulSearch(treap, data);
         long unsuccessfulSearchTime = timeTreapUnsuccessfulSearch(treap, data.size());
         long traversalTime = timeTreapTraversal(treap);
         long deleteTime = timeTreapDelete(treap, data);
 
-        printResults("Treap", insertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
+        printResults("Treap", insertTime, singleInsertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
     }
 
     private static void benchmarkAVL(List<Integer> data) {
         AVLTree<Integer, Integer> avl = new AVLTree<>();
 
         long insertTime = timeAVLInsert(avl, data);
+        long singleInsertTime = timeAVLSingleInsert(avl, data.size() + 1000000);
         long successfulSearchTime = timeAVLSuccessfulSearch(avl, data);
         long unsuccessfulSearchTime = timeAVLUnsuccessfulSearch(avl, data.size());
         long traversalTime = timeAVLTraversal(avl);
         long deleteTime = timeAVLDelete(avl, data);
 
-        printResults("AVL", insertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
+        printResults("AVL", insertTime, singleInsertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
     }
 
     private static void benchmarkJavaTreeMap(List<Integer> data) {
@@ -63,21 +65,24 @@ public class BenchmarkMaps {
 
         long insertTime = timeJavaTreeMapInsert(treeMap, data);
         long successfulSearchTime = timeJavaTreeMapSuccessfulSearch(treeMap, data);
+        long singleInsertTime = timeJavaTreeMapSingleInsert(treeMap, data.size() + 1000000);
         long unsuccessfulSearchTime = timeJavaTreeMapUnsuccessfulSearch(treeMap, data.size());
         long traversalTime = timeJavaTreeMapTraversal(treeMap);
         long deleteTime = timeJavaTreeMapDelete(treeMap, data);
 
-        printResults("Java TreeMap", insertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
+        printResults("Java TreeMap", insertTime,  singleInsertTime, successfulSearchTime, unsuccessfulSearchTime, traversalTime, deleteTime);
     }
 
     private static void printResults(String structureName,
                                      long insertTime,
+                                     long singleInsertTime,
                                      long successfulSearchTime,
                                      long unsuccessfulSearchTime,
                                      long traversalTime,
                                      long deleteTime) {
         System.out.println(structureName + ":");
         System.out.println("  Insert time              = " + insertTime + " ns");
+        System.out.println("  Single insert time       = " + singleInsertTime + " ns");
         System.out.println("  Successful search time   = " + successfulSearchTime + " ns");
         System.out.println("  Unsuccessful search time = " + unsuccessfulSearchTime + " ns");
         System.out.println("  Traversal time           = " + traversalTime + " ns");
@@ -99,6 +104,26 @@ public class BenchmarkMaps {
             treap.put(x, x);
         }
         return System.nanoTime() - start;
+    }
+
+    private static long timeTreapSingleInsert(TreapMap<Integer, Integer> treap, int key) {
+        int trials = 1000;
+
+        // warmup
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (int j = 0; j < trials; j++) {
+                treap.put(key + j + 1000000, key);
+                treap.remove(key + j + 1000000);
+            }
+        }
+
+        long start = System.nanoTime();
+        treap.put(key, key);
+        long end = System.nanoTime();
+
+        treap.remove(key); // clean up
+
+        return end - start;
     }
 
     private static long timeTreapSuccessfulSearch(TreapMap<Integer, Integer> treap, List<Integer> data) {
@@ -174,6 +199,25 @@ public class BenchmarkMaps {
         return System.nanoTime() - start;
     }
 
+    private static long timeAVLSingleInsert(AVLTree<Integer, Integer> avl, int key) {
+        int trials = 1000;
+
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (int j = 0; j < trials; j++) {
+                avl.insert(key + j + 1000000, key);
+                avl.delete(key + j + 1000000);
+            }
+        }
+
+        long start = System.nanoTime();
+        avl.insert(key, key);
+        long end = System.nanoTime();
+
+        avl.delete(key); // clean up
+
+        return end - start;
+    }
+
     private static long timeAVLSuccessfulSearch(AVLTree<Integer, Integer> avl, List<Integer> data) {
         for (int i = 0; i < WARMUP_RUNS; i++) {
             for (Integer x : data) {
@@ -245,6 +289,24 @@ public class BenchmarkMaps {
             treeMap.put(x, x);
         }
         return System.nanoTime() - start;
+    }
+
+    private static long timeJavaTreeMapSingleInsert(TreeMap<Integer, Integer> treeMap, int key) {
+        int trials = 1000;
+
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            for (int j = 0; j < trials; j++) {
+                treeMap.put(key + j + 1000000, key);
+                treeMap.remove(key + j + 1000000);
+            }
+        }
+        long start = System.nanoTime();
+        treeMap.put(key, key);
+        long end = System.nanoTime();
+
+        treeMap.remove(key); // clean up
+
+        return end - start;
     }
 
     private static long timeJavaTreeMapSuccessfulSearch(TreeMap<Integer, Integer> treeMap, List<Integer> data) {
